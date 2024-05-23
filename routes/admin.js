@@ -3,15 +3,18 @@ const path = require('path');
 
 const route = express.Router();
 
+const products = [];
 
 route.get('/add-product',(req, res, next) => {
-    // console.log('In another niddleware');
-    res.sendFile(path.join(__dirname, '../', 'views', 'add-product.html'));
+    res.render('add-product', {pageTitle: 'Add Product'})
 });
 route.post('/add-product',(req, res, next) => {
     console.log(req.body);
+    products.push({title: req.body.title})
     // res.send('<h1> Product Page <h1>');
     res.redirect('/');
 });
 
-module.exports = route;
+// module.exports = route;
+exports.route = route;
+exports.products = products;

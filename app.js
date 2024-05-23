@@ -5,13 +5,16 @@ const app = express();
 
 const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
-const page404 = require('./routes/404.js')
+const page404 = require('./routes/404.js');
+
+app.set('view engine', 'pug');
+app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin',adminRoute);
+app.use('/admin',adminRoute.route);
 app.use(shopRoute);
 
 app.use(page404);
