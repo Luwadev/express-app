@@ -1,20 +1,38 @@
 const Product = require('../models/product');
 
-exports.getAddProductPage = (req, res, next) => {
-    res.render('add-product', {pageTitle: 'Add Product', path: '/admin/add-product'})
-};
-
-exports.postAddProductPage = (req, res, next) => {
-    const product = new Product(req.body.title);
-    product.save();
-    // res.send('<h1> Product Page <h1>');
-    res.redirect('/');
-};
-
-exports.getHomePage = (req, res, next) => {
-    const products = Product.fetchAll();
-    console.log(products);
+exports.getProducts = (req, res, next) => {
+    Product.fetchAll((products) => {
+        res.render('shop/product-list', {prods: products, pageTitle: 'Products', path: '/products'});
+    });
     // res.sendFile(path.join(__dirname, '../', 'views', 'shop.html'));
-    res.render('shop', {prods: products, pageTitle: 'Shop', path: '/'});
     // res.render('shop');
 };
+
+exports.getAboutPage = (req, res, next) => {
+    res.render('about', {path: '/admin/about', pageTitle: 'About'});
+}
+
+
+exports.getCartPage = (req, res, next) => {
+    res.render('shop/cart', {path: '/cart', pageTitle: 'Your Cart'});
+}
+
+
+exports.getOrdersPage = (req, res, next) => {
+    res.render('shop/orders', {path: '/orders', pageTitle: 'Your Orders'});
+
+}
+
+exports.getIndexPage = (req, res, next) => {
+    // res.render('shop/products', {path: '/products', pageTitle: 'Products Page'});
+    Product.fetchAll((products) => {
+        res.render('shop/index', {prods: products, pageTitle: 'Shop', path: '/'});
+    });
+}
+
+exports.getProductDetailPage = (req, res, next) => {
+    // res.render('shop/product-list', {path: '/product-detail', pageTitle: 'Product Detail'});
+    Product.fetchAll((products) => {
+        res.render('shop/index', {prods: products, pageTitle: 'Products', path: '/products'});
+    });
+}
