@@ -14,17 +14,37 @@ exports.postAddProduct = function (req, res, next) {
   var title = req.body.title;
   var imageUrl = req.body.imageUrl;
   var price = req.body.price;
-  var description = req.body.description;
-  var product = new Product(null, title, imageUrl, description, price);
-  product.save();
-  res.redirect("/");
+  var description = req.body.description; // const product = new Product(null, title, imageUrl, description, price);
+  // product
+  // .save()
+  // .then(() => {
+  //       res.redirect("/");
+  // })
+  // .catch(err => console.log(err));
+
+  req.user.createProduct({
+    price: price,
+    title: title,
+    imageUrl: imageUrl,
+    description: description,
+    userId: req.user.id
+  }).then(function (result) {
+    console.log(result);
+    res.redirect('/admin/products');
+  })["catch"](function (err) {
+    console.log(err);
+  });
 };
 
 exports.getEditProduct = function (req, res, next) {
   var editMode = req.query.edit;
   var productId = req.params.productId;
-  Product.findbyId(productId, function (product) {
-    if (!editMode) {
+  req.user.getProducts({
+    where: {
+      id: productId
+    }
+  }).then(function (product) {
+    if (!product) {
       return res.redirect('/');
     }
 
@@ -34,16 +54,20 @@ exports.getEditProduct = function (req, res, next) {
       product: product,
       editing: editMode
     });
+  })["catch"](function (err) {
+    return console.err;
   });
 };
 
 exports.getProducts = function (req, res, next) {
-  Product.fetchAll(function (products) {
+  Product.findAll().then(function (products) {
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
       path: "/admin/products"
     });
+  })["catch"](function (err) {
+    return console.log(err);
   });
 };
 
@@ -53,13 +77,30 @@ exports.postEditProduct = function (req, res, next) {
   var updatedImageUrl = req.body.imageUrl;
   var updatedPrice = req.body.price;
   var updatedDescription = req.body.description;
-  var updatedProduct = new Product(productId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
-  updatedProduct.save();
-  res.redirect('/admin/products');
+  Product.findByPk(productId).then(function (product) {
+    product.title = updatedTitle;
+    product.imageUrl = updatedImageUrl;
+    product.price = updatedPrice;
+    product.description = updatedDescription;
+    return product.save();
+  }).then(function (result) {
+    console.log('Updated Product!');
+    res.redirect('/admin/products');
+  })["catch"](function (err) {
+    return console.log(err);
+  });
 };
 
 exports.postDeleteProduct = function (req, res, next) {
   var productId = req.body.productId;
-  Product.deleteById(productId);
-  res.redirect('/admin/products');
+  Product.findByPk(productId).then(function (product) {
+    return product.destroy();
+  }).then(function (result) {
+    console.log('Product deleted!');
+    res.redirect('/admin/products');
+  })["catch"](function (err) {
+    return console.log(function (err) {
+      return console.log(err);
+    });
+  });
 };

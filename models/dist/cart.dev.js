@@ -87,6 +87,11 @@ function () {
         var product = updatedCart.products.find(function (product) {
           return product.id === id;
         });
+
+        if (!product) {
+          return;
+        }
+
         updatedCart.products = updatedCart.products.filter(function (prod) {
           return prod.id !== id;
         });
