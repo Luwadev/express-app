@@ -8,16 +8,29 @@
                               <% for (let product of products) { %> 
                                     <ul>
                                           <li>
-                                                <%= product.productData.title %> (<%= product.qty %>)
+                                                <!-- From the cartItem model in sequelize, I acess the cartItem property for the quantity I guess-->
+                                                <%= product.title %> (<%= product.cartItem.quantity %>) 
                                           </li>
+                                          <form action="/cart-delete-item" method="POST">
+                                                <input type="hidden" name="productId" value="<%= product.id %>">
+                                                <button type="submit" class="btn">
+                                                      Delete
+                                                </button>
+                                          </form>
                                     </ul>
-                                    <form action="/cart-delete-item" method="POST">
-                                          <input type="hidden" name="productId" value="<%= product.productData.id %>">
+                                    <hr>
+
+                              <% } %><% { %>
+                              <div class="center">
+                                    <form action="/create-order" method="POST">
                                           <button type="submit" class="btn">
-                                                Delete
+                                                Order
                                           </button>
                                     </form>
-                              <% } %>
+                              </div>
+
+
+                        <% } %>
                         <% } else { %>
                               <h1> No Products found! </h1>
                         <% } %>

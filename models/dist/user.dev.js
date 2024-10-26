@@ -4,12 +4,14 @@ var Sequelize = require('sequelize');
 
 var sequelize = require('../util/database');
 
-var Cart = sequelize.define('cart', {
+var User = sequelize.define('user', {
   id: {
     type: Sequelize.INTEGER,
+    autoIncrement: true,
     allowNull: false,
-    primaryKey: true,
-    autoIncrement: true
-  }
+    primaryKey: true
+  },
+  name: Sequelize.STRING,
+  email: Sequelize.STRING
 });
-module.exports = Cart;
+module.exports = User;

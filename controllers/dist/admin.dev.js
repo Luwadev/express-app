@@ -43,7 +43,9 @@ exports.getEditProduct = function (req, res, next) {
     where: {
       id: productId
     }
-  }).then(function (product) {
+  }).then(function (products) {
+    var product = products[0];
+
     if (!product) {
       return res.redirect('/');
     }
@@ -60,7 +62,7 @@ exports.getEditProduct = function (req, res, next) {
 };
 
 exports.getProducts = function (req, res, next) {
-  Product.findAll().then(function (products) {
+  req.user.getProducts().then(function (products) {
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
